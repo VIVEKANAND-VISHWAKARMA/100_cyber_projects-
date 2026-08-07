@@ -1,0 +1,14 @@
+[package]
+name = "keylogger"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "keylogger"
+path = "src/main.rs"
+
+[dependencies]
+keycore = { path = "../core" }
+capture-evdev = { path = "../capture-evdev" }
+capture-x11 = { path = "../capture-x11" }
+capture-ptrace = { path = "../capture-ptrace" }

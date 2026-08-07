@@ -1,0 +1,8 @@
+[package]
+name = "capture-x11"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+keycore = { path = "../core" }
+x11rb = { version = "0.13", features = ["record"] }
