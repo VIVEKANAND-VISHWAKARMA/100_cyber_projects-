@@ -1,0 +1,10 @@
+[Unit]
+Description=Personal network activity logger (netmon)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 %h/netmon/netmon.py
+Restart=always
+
+[Install]
+WantedBy=default.target
