@@ -1,0 +1,5 @@
+# Add one in-scope root domain per line, e.g.:
+# example.com
+#
+# Only add domains that are explicitly in scope of a program you're
+# enrolled in. Double check the program policy before adding anything here.

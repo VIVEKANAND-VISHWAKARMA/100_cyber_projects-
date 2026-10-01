@@ -1,0 +1,105 @@
+# Central configuration for the Bug Bounty Recon Agent.
+# Values here can be overridden per-target in targets/*.yaml.
+
+recon:
+  # Disable individual tools (useful if a tool isn't installed)
+  tools:
+    subfinder: true
+    crtsh: true
+    wayback: true
+    shodan: true      # requires SHODAN_API_KEY in .env
+    httpx: true
+    katana: true
+    nuclei: true
+    masscan: false    # requires root + masscan installed
+    jsdiff: true
+    portscan: false
+
+  # Timeouts (seconds) for each external tool run
+  timeout:
+    subfinder: 1800
+    httpx: 1800
+    katana: 1800
+    nuclei: 3600
+    masscan: 1800
+
+  # Max concurrent hosts fed to httpx/katana/nuclei (throttling to respect
+  # program rate limits and avoid overwhelming targets)
+  rate_limit:
+    httpx_concurrency: 50
+    katana_concurrency: 25
+    nuclei_concurrency: 20
+    subdomains_per_run: 200
+    endpoints_per_run: 1000
+
+  # Retry behavior for transient tool failures
+  retries:
+    max_attempts: 2
+    backoff_seconds: 15
+
+  nuclei:
+    # Use only default, non-intrusive community detection templates
+    default_templates_only: true
+    severity_filter: "info,low,medium,high,critical"
+    exclude_tags: []        # e.g. ["fuzzing","intrusive","dos"]
+    rate_limit_rps: 5
+
+# Diffing / change detection
+diffing:
+  # Only report new/changed findings above this severity
+  min_finding_severity: "info"   # info | low | medium | high
+  # Ignore new subdomains that look like one-off CI/PR deployments
+  ignore_subdomain_keywords: ["ci-", "-pr-", "pr-", "preview-", "staging-"]
+  # Track "dead" then "alive" transitions as revivals
+  track_revivals: true
+
+# JavaScript change detection
+jsdiff:
+  enabled: true
+  # Re-hash JS files older than this many days to catch updates
+  refetch_interval_days: 3
+  # Only flag JS files above this size (KB) to reduce noise from tiny files
+  min_size_kb: 1
+  # Ignore common third-party CDN scripts
+  ignore_patterns:
+    - "jquery"
+    - "bootstrap"
+    - "react"
+    - "vue"
+    - "angular"
+    - "analytics"
+    - "gtm"
+    - "segment"
+
+# Vulnerable candidate detection (DAST). Detection-only, safe by default.
+vuln_scanner:
+  enabled: true
+  # safe_mode: caps time-based payloads at 3s and never sends destructive/
+  # intrusive payloads. Leave on.
+  safe_mode: true
+  max_urls: 50
+  max_params_per_url: 5
+  concurrency: 1
+  request_delay: 0.3
+  time_threshold: 3
+  # Active parameter-tested classes
+  classes: [sqli, xss, ssti, lfi, cmdi, open_redirect, crlf]
+  # Additional non-parameter checks
+  passive_checks: true
+  exposed_paths: []        # extend the default list if you want more
+  # Optional OAST collaborator URL (e.g. your interactsh/canarytokens host).
+  # Used only for SSRF *timing* hints. Set it here or per-target.
+  oast_url: ""
+
+# Notifications
+notifications:
+  max_items_per_section: 25
+
+# Web dashboard
+dashboard:
+  host: "127.0.0.1"
+  port: 8000
+
+# Reporting
+reports:
+  output_dir: "reports"

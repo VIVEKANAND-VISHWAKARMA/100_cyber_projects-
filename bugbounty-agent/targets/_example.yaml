@@ -1,0 +1,22 @@
+# Example per-target override file.
+# Copy to targets/<your-target>.yaml to override global config.yaml for that
+# single program. Only the keys you include here override the globals.
+#
+# Example: targets/example.com.yaml
+
+# recon:
+#   tools:
+#     katana: true        # enable/disable specific tools for this target
+#     masscan: true       # require this tool just for this target
+#   rate_limit:
+#     httpx_concurrency: 20   # be gentler on this target
+#     nuclei_concurrency: 10
+#     subdomains_per_run: 100
+#   nuclei:
+#     severity_filter: "low,medium,high,critical"  # ignore info-level noise here
+#
+# diffing:
+#   ignore_subdomain_keywords: ["ci-", "-pr-", "preview-", "staging-"]
+#
+# jsdiff:
+#   enabled: false        # disable JS diffing for this target
